@@ -6,7 +6,7 @@ class OnboardingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IntroductionScreen(
-      globalBackgroundColor: Colors.black,
+      globalBackgroundColor: Colors.white,
       pages: [
         _buildPage(
           "Voice First",
@@ -31,11 +31,11 @@ class OnboardingScreen extends StatelessWidget {
       ],
       onDone: () => Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const LoginPage()),
+        MaterialPageRoute(builder: (context) => LoginPage()),
       ),
       onSkip: () => Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const LoginPage()),
+        MaterialPageRoute(builder: (context) => LoginPage()),
       ),
       showSkipButton: true,
       skip: Text("Skip", style: TextStyle(color: Colors.white, fontSize: 18)),
@@ -53,61 +53,58 @@ class OnboardingScreen extends StatelessWidget {
       ),
     );
   }
- 
+
   PageViewModel _buildPage(String title, String body, String imagePath) {
     return PageViewModel(
-      titleWidget: Column(
+      titleWidget: SizedBox(
+        height: 50,
+      ), // Removed title from top
+      bodyWidget: Stack(
         children: [
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
+          ClipPath(
+            clipper: TopArcClipper(),
+            child: Container(
+              width: double.infinity,
+              height: 300, // Adjusted height for title & subtitle inside arc
               color: Colors.black,
-              fontFamily: 'Montserrat',
+              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 40),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    title,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontFamily: 'Montserrat',
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Container(height: 4, width: 50, color: Colors.yellow),
+                  SizedBox(height: 12),
+                  Text(
+                    body,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey.shade400,
+                      fontFamily: 'Montserrat',
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          SizedBox(height: 8),
-          Container(
-            height: 4,
-            width: 50,
-            color: Colors.yellow,
           ),
         ],
       ),
-      bodyWidget: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black26,
-                blurRadius: 8,
-                offset: Offset(0, 4),
-              ),
-            ],
-          ),
-          padding: EdgeInsets.all(16),
-          child: Text(
-            body,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.black,
-              fontFamily: 'Montserrat',
-            ),
-          ),
-        ),
-      ),
       image: Center(
-        child: Image.asset(imagePath, height: 350),
+        child: Image.asset(imagePath, height: 300),
       ),
       decoration: PageDecoration(
         imagePadding: EdgeInsets.only(top: 20),
-        titlePadding: EdgeInsets.only(top: 30),
+        titlePadding: EdgeInsets.only(top: 10),
         bodyAlignment: Alignment.center,
         boxDecoration: BoxDecoration(
           gradient: LinearGradient(
@@ -120,4 +117,21 @@ class OnboardingScreen extends StatelessWidget {
     );
   }
 }
- 
+
+// Custom clipper for arc at the TOP
+class TopArcClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    Path path = Path();
+    path.moveTo(0, 50); // Move the start point down
+    path.quadraticBezierTo(
+        size.width / 2, -50, size.width, 50); // Create the arc
+    path.lineTo(size.width, size.height);
+    path.lineTo(0, size.height);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
+}
