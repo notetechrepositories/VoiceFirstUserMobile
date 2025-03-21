@@ -1,5 +1,10 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as https;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:voicefirstuser/Screens/forgot_password.dart';
+import 'package:voicefirstuser/Screens/home_page.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -10,6 +15,54 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
+  bool _isLoading = false; // To show loading indicator
+  String _errorMessage = '';
+
+  Future<void> _login() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = '';
+    });
+
+    final String username = _emailController.text.trim();
+    final String password = _passwordController.text.trim();
+
+    var body = jsonEncode(<String, String>{
+      'username': username,
+      'password': password,
+    });
+
+    HttpOverrides.global = MyHttpOverrides();
+    try {
+      final response = await https.post(
+        Uri.parse('https://10.0.2.2:7027/api/auth/login'),
+        headers: {'Content-Type': 'application/json; charset=UTF-8'},
+        body: body,
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        if (responseData['data'] != null) {
+          final token = responseData['data']['token'];
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString('token', token);
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomePage()),
+          );
+        } else {
+          setState(() => _errorMessage = 'Invalid username or password.');
+        }
+      } else {
+        setState(() => _errorMessage = 'An error occurred. Please try again.');
+      }
+    } catch (e) {
+      setState(() => _errorMessage = "Error: ${e.toString()}");
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +81,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(80),
-                ),
+                borderRadius:
+                    BorderRadius.only(bottomLeft: Radius.circular(80)),
               ),
               padding: EdgeInsets.symmetric(vertical: 60, horizontal: 30),
               child: Align(
@@ -39,22 +91,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      "Welcome Back",
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
+                    Text("Welcome Back",
+                        style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white)),
                     SizedBox(height: 5),
-                    Text(
-                      "Please sign in to continue",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white70,
-                      ),
-                    ),
+                    Text("Please sign in to continue",
+                        style: TextStyle(fontSize: 16, color: Colors.white70)),
                   ],
                 ),
               ),
@@ -62,7 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
             SizedBox(height: 40),
 
-            // Email TextField
+            // Email Field
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 30),
               child: TextField(
@@ -76,7 +120,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     borderSide: BorderSide.none,
                   ),
                   prefixIcon: Icon(Icons.email, color: Colors.orange),
-                  // suffixIcon: Icon(Icons.check_circle, color: Colors.green),
                   contentPadding: EdgeInsets.symmetric(vertical: 18),
                 ),
               ),
@@ -84,7 +127,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
             SizedBox(height: 20),
 
-            // Password TextField
+            // Password Field
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 30),
               child: TextField(
@@ -107,9 +150,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       color: Colors.grey,
                     ),
                     onPressed: () {
-                      setState(() {
-                        _isPasswordVisible = !_isPasswordVisible;
-                      });
+                      setState(() => _isPasswordVisible = !_isPasswordVisible);
                     },
                   ),
                   contentPadding: EdgeInsets.symmetric(vertical: 18),
@@ -120,7 +161,7 @@ class _LoginScreenState extends State<LoginScreen> {
             SizedBox(height: 15),
 
             // Forgot Password
-             Align(
+            Align(
               alignment: Alignment.centerRight,
               child: Padding(
                 padding: EdgeInsets.only(right: 30),
@@ -128,7 +169,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ForgotPasswordScreen()),
+                      MaterialPageRoute(
+                          builder: (context) => ForgotPasswordScreen()),
                     );
                   },
                   child: Text(
@@ -142,7 +184,21 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
+
             SizedBox(height: 30),
+
+            // Error Message
+            if (_errorMessage.isNotEmpty)
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 30),
+                child: Text(
+                  _errorMessage,
+                  style: TextStyle(color: Colors.red, fontSize: 14),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+
+            SizedBox(height: 20),
 
             // Login Button
             Padding(
@@ -151,9 +207,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 width: double.infinity,
                 height: 55,
                 child: ElevatedButton(
-                  onPressed: () {
-                    print("Login Clicked");
-                  },
+                  onPressed: _isLoading ? null : _login,
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(vertical: 15),
                     shape: RoundedRectangleBorder(
@@ -164,42 +218,29 @@ class _LoginScreenState extends State<LoginScreen> {
                     shadowColor: Colors.orangeAccent,
                     elevation: 5,
                   ),
-                  child: Text(
-                    "Login",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
+                  child: _isLoading
+                      ? CircularProgressIndicator(color: Colors.white)
+                      : Text("Login",
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold)),
                 ),
               ),
             ),
 
             SizedBox(height: 20),
-
-            // Sign Up Text
-            // GestureDetector(
-            //   onTap: () {
-            //     print("Sign Up Clicked");
-            //   },
-            //   child: RichText(
-            //     text: TextSpan(
-            //       text: "Don’t have an account? ",
-            //       style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
-            //       children: [
-            //         TextSpan(
-            //           text: "Sign up",
-            //           style: TextStyle(
-            //             color: Colors.orange.shade800,
-            //             fontWeight: FontWeight.bold,
-            //           ),
-            //         ),
-            //       ],
-            //     ),
-            //   ),
-            // ),
-
-            SizedBox(height: 30),
           ],
         ),
       ),
     );
+  }
+}
+
+// HTTP Overrides for localhost SSL issues
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }
