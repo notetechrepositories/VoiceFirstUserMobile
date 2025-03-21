@@ -68,6 +68,7 @@ flutter:
     - assets/OnBoardingImage/2.png
     - assets/OnBoardingImage/3.png
     - assets/OnBoardingImage/4.png
+    - assets/WelcomePage/welcomePage.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
