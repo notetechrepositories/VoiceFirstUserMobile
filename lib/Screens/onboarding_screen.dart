@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:voicefirstuser/Screens/login_page.dart';
+import 'package:voicefirstuser/Screens/splash_screen.dart';
 
 class OnboardingScreen extends StatelessWidget {
   @override
