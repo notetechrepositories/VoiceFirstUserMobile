@@ -5,7 +5,6 @@ import 'package:voicefirstuser/User/Dashboard/QrScanner.dart';
 
 import 'package:voicefirstuser/User/Dashboard/UserHomeScreen.dart';
 
-// import other screens like SavedScreen, ScanScreen if you have them
 class Bottomnavbar extends StatefulWidget {
   @override
   _BottomnavbarState createState() => _BottomnavbarState();
@@ -14,7 +13,7 @@ class Bottomnavbar extends StatefulWidget {
 class _BottomnavbarState extends State<Bottomnavbar> {
   int _currentIndex = 0;
   final List<Widget> _screens = [
-    Userhomescreen(), // This might be missing or commented
+    Userhomescreen(),
     SavedScreen(),
     QrScanScreen(),
     ProfileScreen(),
