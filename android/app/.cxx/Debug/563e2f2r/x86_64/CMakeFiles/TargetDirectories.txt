@@ -1,0 +1,2 @@
+C:/Users/pravi/voicefirstuser/android/app/.cxx/Debug/563e2f2r/x86_64/CMakeFiles/edit_cache.dir
+C:/Users/pravi/voicefirstuser/android/app/.cxx/Debug/563e2f2r/x86_64/CMakeFiles/rebuild_cache.dir

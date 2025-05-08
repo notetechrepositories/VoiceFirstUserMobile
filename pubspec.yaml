@@ -35,11 +35,12 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   introduction_screen: ^3.1.17
+  file_picker: ^10.1.2
+  mobile_scanner: ^7.0.0
+  qr_code_scanner: ^1.0.1
+  speech_to_text: ^7.0.0
 
   
-  
-  
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -71,6 +72,7 @@ flutter:
     - assets/OnBoardingImage/3.png
     - assets/OnBoardingImage/4.png
     - assets/WelcomePage/welcomePage.png
+    - assets/google maps.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
