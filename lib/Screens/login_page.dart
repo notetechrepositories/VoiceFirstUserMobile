@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voicefirstuser/User/Dashboard/BottomNavBar.dart';
 import 'package:voicefirstuser/User/Dashboard/UserHomeScreen.dart';
 import 'package:voicefirstuser/Admin/Dashboard/home_screen.dart'; // Update this with actual screen paths
 
@@ -53,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
     } else if (username == userUsername && password == userPassword) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => Userhomescreen()),
+        MaterialPageRoute(builder: (context) => Bottomnavbar()),
       );
     } else {
       setState(() {

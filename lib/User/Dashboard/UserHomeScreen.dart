@@ -431,6 +431,7 @@ class _UserhomescreenState extends State<Userhomescreen> {
           // ),
         ],
       ),
+<<<<<<< HEAD
 
       // Bottom Navigation Bar
       // bottomNavigationBar: BottomNavigationBar(
@@ -457,6 +458,8 @@ class _UserhomescreenState extends State<Userhomescreen> {
       //     BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
       //   ],
       // ),
+=======
+>>>>>>> 89a5a63d9f1f6b0d35d3fc35f6dead96546199cc
     );
   }
 }
