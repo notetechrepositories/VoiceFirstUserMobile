@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:voicefirstuser/Admin/Dashboard/home_screen.dart';
+import 'package:voicefirstuser/User/Dashboard/BottomNavBar.dart';
 import 'package:voicefirstuser/User/Issue_Forms/issueForm.dart';
+import 'package:voicefirstuser/User/Dashboard/profile.dart';
 
 class Userhomescreen extends StatefulWidget {
   @override
@@ -7,6 +10,14 @@ class Userhomescreen extends StatefulWidget {
 }
 
 class _UserhomescreenState extends State<Userhomescreen> {
+  // int _currentIndex=0;
+  //  final List<Widget> _screens = [
+
+  //   Center(child: Text('Saved Page', style: TextStyle(color: Colors.white))),
+  //   // QrScanScreen(),
+  //   ProfileScreen(),
+  // ];
+
   TextEditingController _searchController = TextEditingController();
 
   final List<Map<String, dynamic>> places = [
@@ -253,6 +264,7 @@ class _UserhomescreenState extends State<Userhomescreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
+      // drawer: AppDrawer(),
       appBar: AppBar(
         backgroundColor: Colors.black,
         elevation: 0,
@@ -355,8 +367,7 @@ class _UserhomescreenState extends State<Userhomescreen> {
                               place['t3_section_name'],
                               style: TextStyle(
                                 fontSize: 18,
-                                 
-                                 color: Colors.white,
+                                color: Colors.white,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -399,48 +410,26 @@ class _UserhomescreenState extends State<Userhomescreen> {
           ),
 
           // Scan QR Code Button
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ElevatedButton.icon(
-              onPressed: () {
-                // Handle scan
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.yellow,
-                foregroundColor: Colors.black,
-                padding: EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                minimumSize: Size(double.infinity, 50),
-              ),
-              icon: Icon(Icons.qr_code_scanner),
-              label: Text('Scan QR Code'),
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.all(16.0),
+          //   child: ElevatedButton.icon(
+          //     onPressed: () {
+          //       // Handle scan
+          //     },
+          //     style: ElevatedButton.styleFrom(
+          //       backgroundColor: Color(0xFFFCC737),
+          //       foregroundColor: Colors.black,
+          //       padding: EdgeInsets.symmetric(vertical: 16),
+          //       shape: RoundedRectangleBorder(
+          //         borderRadius: BorderRadius.circular(12),
+          //       ),
+          //       minimumSize: Size(double.infinity, 50),
+          //     ),
+          //     icon: Icon(Icons.qr_code_scanner),
+          //     label: Text('Scan QR Code'),
+          //   ),
+          // ),
         ],
-      ),
-
-      // Bottom Navigation Bar
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.black,
-        selectedItemColor: Colors.yellow,
-        unselectedItemColor: const Color.fromARGB(179, 163, 157, 157),
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.location_on),
-            label: 'Nearby',
-            backgroundColor: Colors.black,
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.bookmark), label: 'Saved'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.qr_code_scanner), label: 'Scan'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-        ],
-        currentIndex: 0,
-        onTap: (index) {
-          // Handle tab changes
-        },
       ),
     );
   }
