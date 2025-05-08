@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voicefirstuser/Screens/saved_page.dart';
 import 'package:voicefirstuser/User/Dashboard/Profile.dart';
 import 'package:voicefirstuser/User/Dashboard/QrScanner.dart';
 
@@ -14,7 +15,7 @@ class _BottomnavbarState extends State<Bottomnavbar> {
   int _currentIndex = 0;
   final List<Widget> _screens = [
     Userhomescreen(), // This might be missing or commented
-    Center(child: Text('Saved Page', style: TextStyle(color: Colors.white))),
+    SavedScreen(),
     QrScanScreen(),
     ProfileScreen(),
   ];
