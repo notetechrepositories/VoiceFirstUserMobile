@@ -431,6 +431,32 @@ class _UserhomescreenState extends State<Userhomescreen> {
           // ),
         ],
       ),
+
+      // Bottom Navigation Bar
+      // bottomNavigationBar: BottomNavigationBar(
+      //   backgroundColor: Colors.black,
+      //   selectedItemColor: Color(0xFFFCC737),
+      //   unselectedItemColor: Colors.white,
+      //   selectedLabelStyle: TextStyle(color: Color(0xFFFCC737)),
+      //   unselectedLabelStyle: TextStyle(color: Colors.white),
+      //   type: BottomNavigationBarType.fixed,
+      //   currentIndex: _currentIndex,
+      //   onTap: (index) {
+      //     setState(() => _currentIndex = index);
+      //   },
+      //   items: [
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.location_on),
+      //       label: 'Nearby',
+      //     ),
+      //     BottomNavigationBarItem(icon: Icon(Icons.bookmark), label: 'Saved'),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.qr_code_scanner),
+      //       label: 'Scan',
+      //     ),
+      //     BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+      //   ],
+      // ),
     );
   }
 }
