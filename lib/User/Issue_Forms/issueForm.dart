@@ -2,7 +2,27 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
-import 'package:voicefirstuser/Models/feedback_entry.dart';
+import 'package:voicefirstuser/Screens/saved_page.dart';
+
+// ======== Feedback Model + Global List ========
+class FeedbackEntry {
+  final String issueType;
+  final String message;
+  final String transcription;
+  final List<File?> images;
+  final List<File?> videos;
+
+  FeedbackEntry({
+    required this.issueType,
+    required this.message,
+    required this.transcription,
+    required this.images,
+    required this.videos,
+  });
+}
+
+// Global store (mock data layer for prototype)
+List<FeedbackEntry> feedbackList = [];
 
 class FeedbackFormScreen extends StatefulWidget {
   @override
@@ -59,7 +79,7 @@ class _FeedbackFormScreenState extends State<FeedbackFormScreen> {
 
   Future<void> _stopListening() async {
     await _speech.stop();
-    await _initSpeech();
+    await _initSpeech(); // Re-warm
     setState(() => _isListening = false);
   }
 
@@ -112,16 +132,16 @@ class _FeedbackFormScreenState extends State<FeedbackFormScreen> {
   }
 
   void _submitForm() {
-    if (_selectedIssue == null || _messageController.text.isEmpty) {
+    if (_selectedIssue == null || _messageController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please complete required fields')),
+        SnackBar(content: Text('Please fill in all required fields')),
       );
       return;
     }
 
     final entry = FeedbackEntry(
       issueType: _selectedIssue!,
-      message: _messageController.text,
+      message: _messageController.text.trim(),
       transcription: _transcribedText,
       images: [_image1, _image2],
       videos: _selectedIssue == 'Late Delivery' ? [] : [_video1, _video2],
@@ -129,10 +149,7 @@ class _FeedbackFormScreenState extends State<FeedbackFormScreen> {
 
     feedbackList.add(entry);
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Feedback submitted')),
-    );
-
+    // Reset state
     setState(() {
       _selectedIssue = null;
       _messageController.clear();
@@ -142,6 +159,12 @@ class _FeedbackFormScreenState extends State<FeedbackFormScreen> {
       _video1 = null;
       _video2 = null;
     });
+
+    // Navigate to Saved screen
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SavedScreen()),
+    );
   }
 
   @override
@@ -159,7 +182,6 @@ class _FeedbackFormScreenState extends State<FeedbackFormScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Dropdown
             Text('Issue Type', style: TextStyle(color: Colors.white)),
             DropdownButtonFormField<String>(
               dropdownColor: Colors.grey[900],
@@ -179,8 +201,6 @@ class _FeedbackFormScreenState extends State<FeedbackFormScreen> {
               ),
             ),
             SizedBox(height: 20),
-
-            // Message field
             Text('Message', style: TextStyle(color: Colors.white)),
             TextField(
               controller: _messageController,
@@ -196,8 +216,6 @@ class _FeedbackFormScreenState extends State<FeedbackFormScreen> {
               ),
             ),
             SizedBox(height: 20),
-
-            // Voice transcription
             Text('Voice Transcription', style: TextStyle(color: Colors.white)),
             Container(
               padding: EdgeInsets.all(12),
@@ -227,23 +245,17 @@ class _FeedbackFormScreenState extends State<FeedbackFormScreen> {
                 ],
               ),
             ),
-
-            // Images
             if (_selectedIssue != null) ...[
-              SizedBox(height: 10),
               Text('Image Uploads', style: TextStyle(color: Colors.white)),
               _filePickerBox(_image1, () => _pickFile(isImage: true, slot: 1)),
               _filePickerBox(_image2, () => _pickFile(isImage: true, slot: 2)),
             ],
-
-            // Videos (conditionally shown)
             if (!isLateDelivery && _selectedIssue != null) ...[
               SizedBox(height: 20),
               Text('Video Uploads', style: TextStyle(color: Colors.white)),
               _filePickerBox(_video1, () => _pickFile(isImage: false, slot: 1)),
               _filePickerBox(_video2, () => _pickFile(isImage: false, slot: 2)),
             ],
-
             SizedBox(height: 30),
             ElevatedButton(
               onPressed: _submitForm,
