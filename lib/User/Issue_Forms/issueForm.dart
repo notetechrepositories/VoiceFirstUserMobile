@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
+import 'package:voicefirstuser/Models/feedback_entry.dart';
 
 class FeedbackFormScreen extends StatefulWidget {
   @override
@@ -58,7 +59,7 @@ class _FeedbackFormScreenState extends State<FeedbackFormScreen> {
 
   Future<void> _stopListening() async {
     await _speech.stop();
-    await _initSpeech(); // Re-warm for next usage
+    await _initSpeech();
     setState(() => _isListening = false);
   }
 
@@ -97,10 +98,8 @@ class _FeedbackFormScreenState extends State<FeedbackFormScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.upload_file, color: Colors.grey),
-                    Text(
-                      "No file selected",
-                      style: TextStyle(color: Colors.grey),
-                    ),
+                    Text("No file selected",
+                        style: TextStyle(color: Colors.grey)),
                   ],
                 )
               : Text(
@@ -112,8 +111,43 @@ class _FeedbackFormScreenState extends State<FeedbackFormScreen> {
     );
   }
 
+  void _submitForm() {
+    if (_selectedIssue == null || _messageController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please complete required fields')),
+      );
+      return;
+    }
+
+    final entry = FeedbackEntry(
+      issueType: _selectedIssue!,
+      message: _messageController.text,
+      transcription: _transcribedText,
+      images: [_image1, _image2],
+      videos: _selectedIssue == 'Late Delivery' ? [] : [_video1, _video2],
+    );
+
+    feedbackList.add(entry);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Feedback submitted')),
+    );
+
+    setState(() {
+      _selectedIssue = null;
+      _messageController.clear();
+      _transcribedText = '';
+      _image1 = null;
+      _image2 = null;
+      _video1 = null;
+      _video2 = null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final bool isLateDelivery = _selectedIssue == 'Late Delivery';
+
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -125,7 +159,7 @@ class _FeedbackFormScreenState extends State<FeedbackFormScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Issue Type
+            // Dropdown
             Text('Issue Type', style: TextStyle(color: Colors.white)),
             DropdownButtonFormField<String>(
               dropdownColor: Colors.grey[900],
@@ -140,14 +174,13 @@ class _FeedbackFormScreenState extends State<FeedbackFormScreen> {
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.grey[850],
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
               ),
             ),
             SizedBox(height: 20),
 
-            // Message
+            // Message field
             Text('Message', style: TextStyle(color: Colors.white)),
             TextField(
               controller: _messageController,
@@ -158,14 +191,13 @@ class _FeedbackFormScreenState extends State<FeedbackFormScreen> {
                 fillColor: Colors.grey[850],
                 hintText: 'Enter your feedback...',
                 hintStyle: TextStyle(color: Colors.white70),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
               ),
             ),
             SizedBox(height: 20),
 
-            // Voice Transcription
+            // Voice transcription
             Text('Voice Transcription', style: TextStyle(color: Colors.white)),
             Container(
               padding: EdgeInsets.all(12),
@@ -196,31 +228,31 @@ class _FeedbackFormScreenState extends State<FeedbackFormScreen> {
               ),
             ),
 
-            // Image Uploads
-            SizedBox(height: 10),
-            Text('Image Uploads', style: TextStyle(color: Colors.white)),
-            _filePickerBox(_image1, () => _pickFile(isImage: true, slot: 1)),
-            _filePickerBox(_image2, () => _pickFile(isImage: true, slot: 2)),
+            // Images
+            if (_selectedIssue != null) ...[
+              SizedBox(height: 10),
+              Text('Image Uploads', style: TextStyle(color: Colors.white)),
+              _filePickerBox(_image1, () => _pickFile(isImage: true, slot: 1)),
+              _filePickerBox(_image2, () => _pickFile(isImage: true, slot: 2)),
+            ],
 
-            // Video Uploads
-            SizedBox(height: 20),
-            Text('Video Uploads', style: TextStyle(color: Colors.white)),
-            _filePickerBox(_video1, () => _pickFile(isImage: false, slot: 1)),
-            _filePickerBox(_video2, () => _pickFile(isImage: false, slot: 2)),
+            // Videos (conditionally shown)
+            if (!isLateDelivery && _selectedIssue != null) ...[
+              SizedBox(height: 20),
+              Text('Video Uploads', style: TextStyle(color: Colors.white)),
+              _filePickerBox(_video1, () => _pickFile(isImage: false, slot: 1)),
+              _filePickerBox(_video2, () => _pickFile(isImage: false, slot: 2)),
+            ],
 
-            // Submit
             SizedBox(height: 30),
             ElevatedButton(
-              onPressed: () {
-                // TODO: handle form submission
-              },
+              onPressed: _submitForm,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFFFCC737),
                 foregroundColor: Colors.black,
                 minimumSize: Size(double.infinity, 50),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
+                    borderRadius: BorderRadius.circular(10)),
               ),
               child: Text('Submit'),
             ),
