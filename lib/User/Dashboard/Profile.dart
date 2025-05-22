@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:voicefirstuser/Screens/login_page.dart';
+import 'package:voicefirstuser/User/Dashboard/AccountSettings.dart';
+import 'package:voicefirstuser/User/Dashboard/HelpSupportPage.dart';
+import 'package:voicefirstuser/User/Dashboard/PrivacySecurityPage.dart';
 
 class ProfileScreen extends StatelessWidget {
   @override
@@ -6,7 +10,10 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        title: Text('Profile'),
+        title: Text(
+          'Profile',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Colors.black,
         elevation: 0,
       ),
@@ -42,21 +49,64 @@ class ProfileScreen extends StatelessWidget {
               ),
               padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             ),
-            child: Text('Edit Profile'),
+            child: Text('Edit'),
           ),
           SizedBox(height: 30),
           Divider(color: Colors.grey[700]),
 // Options
-          _buildProfileOption(Icons.settings, 'Account Settings'),
-          _buildProfileOption(Icons.security, 'Privacy & Security'),
-          _buildProfileOption(Icons.help_outline, 'Help & Support'),
-          _buildProfileOption(Icons.logout, 'Log Out', color: Colors.redAccent),
+          _buildProfileOption(
+            Icons.lock,
+            'Account Settings',
+            onTap: () {
+              print('Navigating to Accountsettings');
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Accountsettings()),
+              );
+            },
+          ),
+
+          _buildProfileOption(
+            Icons.security,
+            'Privacy & Security',
+            onTap: () {
+              print('Navigating to PrivacySecurityPage');
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => PrivacySecurityPage()),
+              );
+            },
+          ),
+          _buildProfileOption(
+            Icons.help_outline,
+            'Help and Supports',
+            onTap: () {
+              print('Navigating to PrivacySecurityPage');
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => HelpSupportPage()),
+              );
+            },
+          ),
+
+          _buildProfileOption(
+            Icons.logout,
+            'Log Out',
+            color: Colors.redAccent,
+            onTap: () {
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => LoginScreen()),
+                (Route<dynamic> route) => false,
+              );
+            },
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildProfileOption(IconData icon, String title, {Color? color}) {
+  Widget _buildProfileOption(IconData icon, String title,
+      {Color? color, VoidCallback? onTap}) {
     return ListTile(
       leading: Icon(icon, color: color ?? Colors.white),
       title: Text(
@@ -68,9 +118,7 @@ class ProfileScreen extends StatelessWidget {
         color: color ?? Colors.white,
         size: 16,
       ),
-      onTap: () {
-// Handle navigation or action
-      },
+      onTap: onTap,
     );
   }
 }

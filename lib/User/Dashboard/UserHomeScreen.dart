@@ -58,11 +58,16 @@ class _UserhomescreenState extends State<Userhomescreen> {
       "branch_details": {
         "t2_company_branch_id": "BR002",
         "t2_company_branch_name": "Uptown Branch",
-        "t2_branch_type_id": "BT001",
+        "t2_branch_type_id": "BT001",  
+
+
+
+
+        
         "t2_branch_type": "Restaurant",
         "t2_address_1": "456 Uptown Avenue",
         "t2_address_2": "Floor 2",
-        "t2_mobile_no": "+1987654321",
+        "t2_mobile_no": "+1987654321",   
         "t2_phone_no": "+1123456789",
         "t2_email": "uptown@restaurant.com",
         "t2_1_local_id": "LOC002",
@@ -175,9 +180,9 @@ class _UserhomescreenState extends State<Userhomescreen> {
         "t2_phone_no": "+9876541230",
         "t2_email": "bayarea@cafe.com",
         "t2_1_local_id": "LOC006",
-        "t2_1_local_name": "Bay City"
+        "t2_1_local_name": "Bay City"    
       },
-      "company_details": {
+      "company_details": {  
         "t1_company": "COMPANY002",
         "t1_company_name": "Fresh Eats Ltd.",
         "id_company_type": "CT002",
@@ -412,14 +417,19 @@ class _UserhomescreenState extends State<Userhomescreen> {
           // Scan QR Code Button
           // Padding(
           //   padding: const EdgeInsets.all(16.0),
-          //   child: ElevatedButton.icon(
+
+          //   child: ElevatedButton.icon(   
           //     onPressed: () {
           //       // Handle scan
           //     },
           //     style: ElevatedButton.styleFrom(
+
           //       backgroundColor: Color(0xFFFCC737),
           //       foregroundColor: Colors.black,
-          //       padding: EdgeInsets.symmetric(vertical: 16),
+          //       padding: EdgeInsets.symmetric(vertic
+          //
+          //
+          //al: 16),
           //       shape: RoundedRectangleBorder(
           //         borderRadius: BorderRadius.circular(12),
           //       ),
@@ -434,3 +444,4 @@ class _UserhomescreenState extends State<Userhomescreen> {
     );
   }
 }
+ 
